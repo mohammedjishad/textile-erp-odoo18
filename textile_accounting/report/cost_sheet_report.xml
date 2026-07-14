@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_mfg_cost_sheet" model="ir.actions.report">
+        <field name="name">Finished Product Cost Sheet</field>
+        <field name="model">mrp.production</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">textile_accounting.report_mfg_cost_sheet_template</field>
+        <field name="report_file">textile_accounting.report_mfg_cost_sheet_template</field>
+        <field name="print_report_name">'Cost Sheet - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="mrp.model_mrp_production"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_mfg_cost_sheet_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center" style="border-bottom: 2px solid black; padding-bottom: 10px;">
+                            <h2>Finished Product Cost Sheet</h2>
+                            <h4>Manufacturing Order: <t t-out="o.name"/></h4>
+                        </div>
+
+                        <div class="row mt32 mb32">
+                            <div class="col-6">
+                                <strong>Product:</strong> <span t-field="o.product_id.display_name"/><br/>
+                                <strong>Quantity:</strong> <span t-field="o.qty_produced"/> <span t-field="o.product_uom_id.name"/><br/>
+                                <strong>Date Done:</strong> <span t-field="o.date_finished"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Responsible:</strong> <span t-field="o.user_id.name"/><br/>
+                                <strong>Company:</strong> <span t-field="o.company_id.name"/>
+                            </div>
+                        </div>
+
+                        <h4>1. Raw Materials Cost</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-end">Consumed Qty</th>
+                                    <th class="text-end">Unit Cost</th>
+                                    <th class="text-end">Total Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.move_raw_ids" t-as="move">
+                                    <tr t-if="move.state not in ('draft', 'cancel')">
+                                        <td><span t-field="move.product_id.display_name"/></td>
+                                        <td class="text-end">
+                                            <span t-field="move.quantity"/> <span t-field="move.product_uom.name"/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="move.product_id.standard_price" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-set="total_line_cost" t-value="move.quantity * move.product_id.standard_price"/>
+                                            <span t-out="total_line_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr class="border-black font-weight-bold">
+                                    <td colspan="3"><strong>Total Material Cost</strong></td>
+                                    <td class="text-end">
+                                        <strong><span t-field="o.material_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt32">2. Labour &amp; Machine Cost</h4>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Operation</th>
+                                    <th>Workcenter</th>
+                                    <th class="text-end">Duration (Hours)</th>
+                                    <th class="text-end">Labour Cost</th>
+                                    <th class="text-end">Machine Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.workorder_ids" t-as="wo">
+                                    <tr>
+                                        <td><span t-field="wo.name"/></td>
+                                        <td><span t-field="wo.workcenter_id.name"/></td>
+                                        <td class="text-end">
+                                            <t t-set="hours" t-value="wo.duration / 60.0"/>
+                                            <span t-out="hours" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-set="labor_rate" t-value="wo.workcenter_id.textile_labor_rate or o.company_id.textile_labor_rate"/>
+                                            <span t-out="hours * labor_rate" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                        <td class="text-end">
+                                            <t t-set="machine_rate" t-value="wo.workcenter_id.textile_machine_rate or o.company_id.textile_machine_rate"/>
+                                            <span t-out="hours * machine_rate" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr class="border-black font-weight-bold">
+                                    <td colspan="3"><strong>Subtotal Operations Cost</strong></td>
+                                    <td class="text-end">
+                                        <strong><span t-field="o.labour_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></strong>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong><span t-field="o.machine_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt32">3. Cost Summary</h4>
+                        <div class="row">
+                            <div class="col-6 offset-6">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Material Cost</td>
+                                        <td class="text-end"><span t-field="o.material_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Labour Cost</td>
+                                        <td class="text-end"><span t-field="o.labour_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Machine Cost</td>
+                                        <td class="text-end"><span t-field="o.machine_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Overhead Cost (<span t-field="o.company_id.textile_overhead_rate"/>%)</td>
+                                        <td class="text-end"><span t-field="o.overhead_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
+                                    </tr>
+                                    <tr class="border-black font-weight-bold">
+                                        <td><strong>Total Cost</strong></td>
+                                        <td class="text-end"><strong><span t-field="o.total_manufacturing_cost" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Product Std Price</td>
+                                        <td class="text-end"><span t-field="o.product_id.standard_price" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
+                                    </tr>
+                                    <tr class="border-black font-weight-bold">
+                                        <td><strong>Manufacturing Profit</strong></td>
+                                        <td class="text-end"><strong><span t-field="o.manufacturing_profit" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

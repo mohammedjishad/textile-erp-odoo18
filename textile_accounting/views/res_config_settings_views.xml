@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.textile.accounting</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="99"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Textile Accounting" string="Textile Accounting" name="textile_accounting">
+                    <block title="Textile Accounting Configurations" name="textile_accounting_block">
+                        <setting title="Costing &amp; Waste Rates" help="Set Overhead %, Factory Overhead %, and Waste % configurations.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="textile_overhead_rate" class="col-lg-3 o_light_label"/>
+                                    <field name="textile_overhead_rate"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="textile_factory_overhead_rate" class="col-lg-3 o_light_label"/>
+                                    <field name="textile_factory_overhead_rate"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="textile_waste_rate" class="col-lg-3 o_light_label"/>
+                                    <field name="textile_waste_rate"/>
+                                </div>
+                            </div>
+                        </setting>
+                        <setting title="Feature Flags" help="Enable or disable specific textile accounting modules.">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <field name="textile_enable_cost_sheet" class="oe_inline"/>
+                                    <label for="textile_enable_cost_sheet" class="o_light_label"/>
+                                </div>
+                                <div class="row mt8">
+                                    <field name="textile_enable_profitability" class="oe_inline"/>
+                                    <label for="textile_enable_profitability" class="o_light_label"/>
+                                </div>
+                                <div class="row mt8">
+                                    <field name="textile_enable_lot_traceability" class="oe_inline"/>
+                                    <label for="textile_enable_lot_traceability" class="o_light_label"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_textile_accounting_config" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'textile_accounting'}</field>
+    </record>
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_form_view_inherit_textile_accounting" model="ir.ui.view">
+        <field name="name">product.template.form.view.inherit.textile.accounting</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Profitability" name="textile_profitability">
+                    <group>
+                        <group string="Quantity Summary">
+                            <field name="total_manufactured"/>
+                            <field name="total_sold"/>
+                        </group>
+                        <group string="Financial Analysis">
+                            <field name="avg_manufacturing_cost" widget="monetary"/>
+                            <field name="avg_selling_price" widget="monetary"/>
+                            <field name="gross_profit" widget="monetary" style="font-weight: bold;"/>
+                            <field name="margin_percent"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tree view for Product Profitability -->
+    <record id="product_template_tree_view_inherit_textile_accounting" model="ir.ui.view">
+        <field name="name">product.template.tree.view.inherit.textile.accounting</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list string="Product Profitability" create="false" edit="false">
+                <field name="name"/>
+                <field name="total_manufactured"/>
+                <field name="total_sold"/>
+                <field name="avg_manufacturing_cost"/>
+                <field name="avg_selling_price"/>
+                <field name="gross_profit" sum="Total Product Profit"/>
+                <field name="margin_percent" avg="Average Margin %"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Product Profitability -->
+    <record id="action_textile_product_profits" model="ir.actions.act_window">
+        <field name="name">Product Profitability</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="product_template_tree_view_inherit_textile_accounting"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No product profitability statistics found.
+            </p>
+        </field>
+    </record>
+</odoo>

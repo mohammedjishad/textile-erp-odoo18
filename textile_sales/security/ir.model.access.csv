@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_textile_prod_user_product,textile prod user product,product.model_product_template,textile_sales.group_textile_production_user,1,1,1,1
+access_textile_sales_user_product,textile sales user product,product.model_product_template,textile_sales.group_textile_sales_user,1,0,0,0
+access_textile_manager_product,textile manager product,product.model_product_template,textile_sales.group_textile_manager,1,0,0,0
+access_textile_admin_product,textile admin product,product.model_product_template,textile_sales.group_textile_administrator,1,1,1,1
+access_textile_sales_user_sale,textile sales user sale,sale.model_sale_order,textile_sales.group_textile_sales_user,1,1,1,1
+access_textile_prod_user_sale,textile prod user sale,sale.model_sale_order,textile_sales.group_textile_production_user,1,0,0,0
+access_textile_manager_sale,textile manager sale,sale.model_sale_order,textile_sales.group_textile_manager,1,0,0,0
+access_textile_admin_sale,textile admin sale,sale.model_sale_order,textile_sales.group_textile_administrator,1,1,1,1

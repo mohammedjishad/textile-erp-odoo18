@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="textile_dashboard.DashboardTemplate" owl="1">
+        <div class="o_action_manager textile-dashboard-wrapper">
+            <div class="container-fluid dashboard-container py-4">
+                <!-- Header -->
+                <div class="dashboard-header d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h2 class="display-6 fw-bold text-gradient m-0">Textile Management</h2>
+                        <p class="text-muted fs-6 mb-0">Live Overview of Garment Production</p>
+                    </div>
+                    <button class="btn btn-modern-primary" t-on-click="loadData">
+                        <i t-att-class="state.isLoading ? 'fa fa-refresh fa-spin me-2' : 'fa fa-refresh me-2'"></i> 
+                        <span t-esc="state.isLoading ? 'Syncing...' : 'Refresh Data'"/>
+                    </button>
+                </div>
+
+                <div t-if="state.isLoading" class="loader-container">
+                    <div class="spinner-grow text-primary" role="status"></div>
+                    <h5 class="mt-3 text-muted">Aggregating Live Data...</h5>
+                </div>
+
+                <div t-else="" class="dashboard-content fade-in-up">
+                    
+                    <!-- 1. Executive Summary -->
+                    <div class="section-title mb-4">
+                        <h4 class="fw-bold"><i class="fa fa-pie-chart text-primary me-2"></i>Executive Summary</h4>
+                        <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                        <!-- Sales -->
+                        <div class="col-md-3">
+                            <div class="card premium-card sales-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-line-chart"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-primary tracking-wide">Sales</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openSalesAction('quotations')">
+                                        <span class="metric-label">Quotations</span>
+                                        <span class="metric-value"><t t-esc="state.data.sales.quotations"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openSalesAction('orders')">
+                                        <span class="metric-label">Sales Orders</span>
+                                        <span class="metric-value"><t t-esc="state.data.sales.sales_orders"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openSalesAction('delivered')">
+                                        <span class="metric-label">Delivered</span>
+                                        <span class="metric-value text-success"><t t-esc="state.data.sales.delivered"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manufacturing -->
+                        <div class="col-md-3">
+                            <div class="card premium-card mrp-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-industry"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-info tracking-wide">Manufacturing</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openMrpAction('progress')">
+                                        <span class="metric-label">In Progress</span>
+                                        <span class="metric-value"><t t-esc="state.data.manufacturing.in_progress"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openMrpAction('to_close')">
+                                        <span class="metric-label">To Close</span>
+                                        <span class="metric-value"><t t-esc="state.data.manufacturing.to_close"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openMrpAction('done')">
+                                        <span class="metric-label">Done</span>
+                                        <span class="metric-value text-info"><t t-esc="state.data.manufacturing.done"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inventory -->
+                        <div class="col-md-3">
+                            <div class="card premium-card inv-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-cubes"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-warning tracking-wide">Inventory</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openInventoryAction('total')">
+                                        <span class="metric-label">Total Products</span>
+                                        <span class="metric-value"><t t-esc="state.data.inventory.total_products"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openInventoryAction('low')">
+                                        <span class="metric-label">Low Stock</span>
+                                        <span class="metric-value text-warning fw-bold"><t t-esc="state.data.inventory.low_stock"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openInventoryAction('out')">
+                                        <span class="metric-label">Out of Stock</span>
+                                        <span class="metric-value text-danger fw-bold"><t t-esc="state.data.inventory.out_of_stock"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="col-md-3">
+                            <div class="card premium-card qc-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-check-square-o"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-success tracking-wide">Quality</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('pending')">
+                                        <span class="metric-label">Pending</span>
+                                        <span class="metric-value"><t t-esc="state.data.quality.pending"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('passed')">
+                                        <span class="metric-label">Passed</span>
+                                        <span class="metric-value text-success fw-bold"><t t-esc="state.data.quality.passed"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openQualityAction('failed')">
+                                        <span class="metric-label">Failed</span>
+                                        <span class="metric-value text-danger fw-bold"><t t-esc="state.data.quality.failed"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. WIP Dashboard -->
+                    <div class="section-title mb-4">
+                        <h4 class="fw-bold"><i class="fa fa-cogs text-primary me-2"></i>Live WIP Tracking</h4>
+                        <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="wip-container">
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('pre')">
+                                <div class="wip-label">Pre-Production</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.pre_production"/></div>
+                                <div class="wip-icon"><i class="fa fa-clipboard"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('cut')">
+                                <div class="wip-label">Cutting</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.cutting"/></div>
+                                <div class="wip-icon"><i class="fa fa-scissors"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box active-pulse" style="cursor: pointer;" t-on-click="() => this.openWipAction('stitch')">
+                                <div class="wip-label">Stitching</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.stitching"/></div>
+                                <div class="wip-icon"><i class="fa fa-shirtsinbulk"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('finish')">
+                                <div class="wip-label">Finishing</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.finishing"/></div>
+                                <div class="wip-icon"><i class="fa fa-magic"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('qc')">
+                                <div class="wip-label">Quality Check</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.quality_check"/></div>
+                                <div class="wip-icon"><i class="fa fa-search"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('pack')">
+                                <div class="wip-label">Packing</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.packing"/></div>
+                                <div class="wip-icon"><i class="fa fa-archive"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box success-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('finished_goods')">
+                                <div class="wip-label">Finished Goods</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.finished_goods"/></div>
+                                <div class="wip-icon"><i class="fa fa-truck"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_textile_dashboard" model="ir.actions.client">
+        <field name="name">Management Dashboard</field>
+        <field name="tag">textile_dashboard.management_dashboard</field>
+        <field name="target">main</field>
+    </record>
+
+    <!-- Menu Item in the root, maybe as a new Top level App or under Manufacturing? -->
+    <menuitem id="menu_textile_dashboard_root"
+              name="Textile Dashboard"
+              web_icon="textile_dashboard,static/description/icon.png"
+              sequence="10"/>
+
+    <menuitem id="menu_textile_dashboard_main"
+              name="Dashboard"
+              parent="menu_textile_dashboard_root"
+              action="action_textile_dashboard"
+              sequence="10"/>
+
+    <!-- Hide the default Odoo spreadsheet dashboard menu -->
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

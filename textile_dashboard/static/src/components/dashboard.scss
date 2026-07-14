@@ -1,0 +1,255 @@
+.textile-dashboard-wrapper {
+    background-color: #f8fafc;
+    min-height: 100vh;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #334155;
+
+    /* Typography & Headers */
+    .text-gradient {
+        background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .tracking-wide {
+        letter-spacing: 0.05em;
+    }
+
+    .section-title {
+        position: relative;
+        display: inline-block;
+        
+        h4 {
+            color: #1e293b;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .title-underline {
+            height: 3px;
+            width: 40px;
+            background: #3b82f6;
+            border-radius: 2px;
+        }
+    }
+
+    /* Modern Buttons */
+    .btn-modern-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -1px rgba(59, 130, 246, 0.1);
+        transition: all 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.15);
+            color: white;
+        }
+    }
+
+    /* Premium Cards (Glassmorphism & Shadows) */
+    .premium-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: rgba(59, 130, 246, 0.3);
+            
+            .card-icon-bg {
+                transform: scale(1.1) rotate(-5deg);
+                opacity: 0.15;
+            }
+        }
+        
+        .card-icon-bg {
+            position: absolute;
+            right: -10px;
+            bottom: -15px;
+            font-size: 100px;
+            color: #64748b;
+            opacity: 0.05;
+            transition: all 0.4s ease;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card-body {
+            position: relative;
+            z-index: 1;
+            padding: 1.5rem;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.95rem;
+            
+            &:last-child {
+                border-bottom: none;
+            }
+            
+            &.highlight {
+                background: rgba(241, 245, 249, 0.5);
+                padding: 10px 12px;
+                border-radius: 8px;
+                margin-top: 8px;
+                border-bottom: none;
+                
+                .metric-label {
+                    font-weight: 600;
+                    color: #0f172a;
+                }
+                .metric-value {
+                    font-size: 1.2rem;
+                }
+            }
+            
+            .metric-label {
+                color: #64748b;
+            }
+            
+            .metric-value {
+                font-weight: 700;
+                color: #1e293b;
+            }
+        }
+    }
+
+    /* WIP Tracking Pipeline */
+    .wip-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+        padding: 30px 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        overflow-x: auto;
+        gap: 10px;
+        
+        &::-webkit-scrollbar {
+            height: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    }
+
+    .wip-step {
+        flex: 1;
+        min-width: 130px;
+    }
+
+    .wip-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px 15px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        
+        &:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+            
+            .wip-icon {
+                color: #3b82f6;
+                transform: scale(1.1);
+            }
+        }
+        
+        &.active-pulse {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            
+            .wip-value { color: #2563eb; }
+            .wip-icon { color: #3b82f6; }
+        }
+        
+        &.success-box {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            
+            .wip-value { color: #16a34a; }
+            .wip-icon { color: #22c55e; }
+        }
+
+        .wip-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .wip-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1;
+        }
+        
+        .wip-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1rem;
+            color: #cbd5e1;
+            transition: all 0.3s ease;
+        }
+    }
+
+    .wip-arrow {
+        color: #cbd5e1;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+    }
+
+    /* Animations */
+    .fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .loader-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+    }
+}

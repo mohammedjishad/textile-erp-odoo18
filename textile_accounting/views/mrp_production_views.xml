@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_form_view_inherit_textile_accounting" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit.textile.accounting</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Cost Sheet" name="textile_cost_sheet">
+                    <group>
+                        <group string="Manufacturing Costs">
+                            <field name="material_cost" widget="monetary"/>
+                            <field name="labour_cost" widget="monetary"/>
+                            <field name="machine_cost" widget="monetary"/>
+                            <field name="overhead_cost" widget="monetary"/>
+                            <div class="o_td_label">
+                                <label for="total_manufacturing_cost" style="font-weight: bold;"/>
+                            </div>
+                            <field name="total_manufacturing_cost" nolabel="1" widget="monetary" style="font-weight: bold;"/>
+                        </group>
+                        <group string="Analysis &amp; Profit">
+                            <field name="manufacturing_value" widget="monetary"/>
+                            <field name="cost_per_unit" widget="monetary"/>
+                            <div class="o_td_label">
+                                <label for="manufacturing_profit" style="font-weight: bold;"/>
+                            </div>
+                            <field name="manufacturing_profit" nolabel="1" widget="monetary" style="font-weight: bold;"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Tree view for Manufacturing Cost Sheet -->
+    <record id="mrp_production_tree_view_inherit_textile_accounting" model="ir.ui.view">
+        <field name="name">mrp.production.tree.view.inherit.textile.accounting</field>
+        <field name="model">mrp.production</field>
+        <field name="arch" type="xml">
+            <list string="Manufacturing Costs &amp; Profits" create="false" edit="false">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="qty_produced"/>
+                <field name="product_uom_id"/>
+                <field name="material_cost" sum="Total Material Cost"/>
+                <field name="labour_cost" sum="Total Labour Cost"/>
+                <field name="machine_cost" sum="Total Machine Cost"/>
+                <field name="overhead_cost" sum="Total Overhead Cost"/>
+                <field name="total_manufacturing_cost" sum="Total Cost"/>
+                <field name="manufacturing_value" sum="Total Value"/>
+                <field name="manufacturing_profit" sum="Total Profit"/>
+                <field name="state" widget="badge" decoration-success="state == 'done'" decoration-info="state not in ('done', 'cancel')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action for Manufacturing Costs -->
+    <record id="action_textile_mfg_costs" model="ir.actions.act_window">
+        <field name="name">Manufacturing Cost Sheets</field>
+        <field name="res_model">mrp.production</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="mrp_production_tree_view_inherit_textile_accounting"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No manufacturing cost records found.
+            </p>
+        </field>
+    </record>
+</odoo>

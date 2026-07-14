@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit MRP Production Form View -->
+    <record id="mrp_production_form_view_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.textile.mrp</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('type', 'in', ['product', 'consu']), ('categ_id.complete_name', 'not ilike', 'purchased'), ('categ_id.complete_name', 'not ilike', 'raw materials'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Textile Details" name="textile_details">
+                    <field name="wip_dashboard" widget="html" nolabel="1"/>
+                    <notebook>
+                        <page string="Fabric &amp; Specs" name="fabric_and_specs">
+                            <group>
+                                <group string="Consumption Tracking">
+                                    <field name="issued_fabric"/>
+                                    <field name="consumed_fabric"/>
+                                    <field name="returned_fabric"/>
+                                    <field name="waste_qty"/>
+                                    <field name="waste_pct" readonly="1"/>
+                                    <button name="action_record_waste"
+                                            string="Record Waste"
+                                            type="object"
+                                            class="btn-primary mt-2"
+                                            invisible="waste_qty &lt;= 0 or state not in ('progress', 'done')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Performance" name="performance">
+                            <group>
+                                <group string="Production Efficiency">
+                                    <field name="qty_produced" readonly="1"/>
+                                    <field name="product_qty" readonly="1"/>
+                                    <field name="efficiency" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Textile Costing" name="textile_costing">
+                            <group>
+                                <group string="Material &amp; Direct Costs">
+                                    <field name="fabric_cost"/>
+                                    <field name="thread_cost"/>
+                                    <field name="accessories_cost"/>
+                                </group>
+                                <group string="Operational Costs">
+                                    <field name="labor_cost"/>
+                                    <field name="machine_cost"/>
+                                    <field name="packaging_cost"/>
+                                    <field name="overhead_cost"/>
+                                </group>
+                            </group>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_textile_cost" readonly="1" decoration-bf="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit MRP Production Tree View -->
+    <record id="mrp_production_tree_view_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.production.list.inherit.textile.mrp</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="waste_pct" optional="show"/>
+                <field name="efficiency" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
