@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Automatically delete ghost views left over from old modules -->
+    <delete model="ir.ui.view" search="[('arch_db', 'ilike', 'is_textile')]"/>
+    <delete model="ir.ui.view" search="[('arch_db', 'ilike', 'fabric_type')]"/>
+</odoo>

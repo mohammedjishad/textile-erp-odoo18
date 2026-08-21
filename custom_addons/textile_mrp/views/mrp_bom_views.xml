@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Textile Specs page on BoM removed -->
+    <record id="view_mrp_bom_form_textile_categ_filter" model="ir.ui.view">
+        <field name="name">mrp.bom.form.textile.categ.filter</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <field name="product_tmpl_id" position="attributes">
+                <attribute name="domain">(company_id and ['|', ('company_id', '=', False), ('company_id', 'parent_of', [company_id])] or ['|', ('company_id', '=', False), ('company_id', 'parent_of', '')]) + [('type', '=', 'consu'), ('categ_id.bom_usage_type', '=', 'manufactured')]</attribute>
+            </field>
+            <field name="product_tmpl_id" position="after">
+                <field name="manufactured_categ_ids" invisible="1"/>
+                <field name="raw_material_categ_ids" invisible="1"/>
+            </field>
+            <xpath expr="//field[@name='bom_line_ids']//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('categ_id.bom_usage_type', '=', 'raw_material')]</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

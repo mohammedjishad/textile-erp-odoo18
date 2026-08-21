@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="textile_dashboard.DashboardTemplate" owl="1">
+        <div class="textile-dashboard-wrapper">
+            <div class="container-fluid dashboard-container py-4">
+                <!-- Header -->
+                <div class="dashboard-header d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="display-6 fw-bold text-gradient m-0">Textile Management</h2>
+                        <p class="text-muted fs-6 mb-0">Live Overview of Garment Production</p>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Period Selector -->
+                        <div class="period-selector-wrapper">
+                            <select class="form-select period-select" t-att-value="state.currentPeriod" t-on-change="onPeriodChange">
+                                <option value="this_month">This Month</option>
+                                <option value="last_month">Last Month</option>
+                                <option value="this_quarter">This Quarter</option>
+                                <option value="this_year">This Year</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-modern-primary" t-on-click="loadData">
+                            <i t-att-class="state.isLoading ? 'fa fa-refresh fa-spin me-2' : 'fa fa-refresh me-2'"></i> 
+                            <span t-esc="state.isLoading ? 'Syncing...' : 'Refresh Data'"/>
+                        </button>
+                    </div>
+                </div>
+
+                <div t-if="state.isLoading" class="loader-container">
+                    <div class="spinner-grow text-primary" role="status"></div>
+                    <h5 class="mt-3 text-muted">Aggregating Live Data...</h5>
+                </div>
+
+                <div t-else="" class="dashboard-content fade-in-up">
+                    
+                    <!-- 1. Financial & Profitability Performance -->
+                    <div class="section-title mb-4">
+                        <h4 class="fw-bold"><i class="fa fa-money text-primary me-2"></i>Financial &amp; Profitability Summary</h4>
+                        <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                        <!-- Revenue -->
+                        <div class="col-md-3">
+                            <div class="card premium-card card-revenue h-100">
+                                <div class="card-body position-relative">
+                                    <div class="card-icon-bg"><i class="fa fa-line-chart"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-muted tracking-wide mb-2">Revenue (Sales)</h6>
+                                    <h3 class="metric-value-lg text-primary fw-bold mb-2" t-esc="formatCurrency(state.data.financials.revenue)"/>
+                                    <span class="text-xs text-muted">Confirmed Sales Orders in period</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Production Cost -->
+                        <div class="col-md-3">
+                            <div class="card premium-card card-prod-cost h-100">
+                                <div class="card-body position-relative">
+                                    <div class="card-icon-bg"><i class="fa fa-cogs"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-muted tracking-wide mb-2">Production Cost</h6>
+                                    <h3 class="metric-value-lg text-danger fw-bold mb-2" t-esc="formatCurrency(state.data.financials.production_cost)"/>
+                                    <span class="text-xs text-muted">Material + labor + machine + overhead</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Waste Cost -->
+                        <div class="col-md-3">
+                            <div class="card premium-card card-waste-cost h-100">
+                                <div class="card-body position-relative">
+                                    <div class="card-icon-bg"><i class="fa fa-trash"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-muted tracking-wide mb-2">Waste Loss</h6>
+                                    <h3 class="metric-value-lg text-warning fw-bold mb-2" t-esc="formatCurrency(state.data.financials.waste_cost)"/>
+                                    <span class="text-xs text-muted">Valuation of scrapped items</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Net Profit -->
+                        <div class="col-md-3">
+                            <div class="card premium-card card-profit h-100">
+                                <div class="card-body position-relative">
+                                    <div class="card-icon-bg"><i class="fa fa-pie-chart"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-muted tracking-wide mb-2">Net Profit</h6>
+                                    <h3 class="metric-value-lg fw-bold mb-2" t-att-class="state.data.financials.profit &gt;= 0 ? 'text-success' : 'text-danger'" t-esc="formatCurrency(state.data.financials.profit)"/>
+                                    <span class="text-xs text-muted">Revenue - Cost - Waste Loss</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Executive Summary -->
+                    <div class="section-title mb-4">
+                        <h4 class="fw-bold"><i class="fa fa-tachometer text-primary me-2"></i>Executive Summary</h4>
+                        <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                        <!-- Sales -->
+                        <div class="col-md-3">
+                            <div class="card premium-card sales-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-shopping-cart"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-primary tracking-wide">Sales</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openSalesAction('quotations')">
+                                        <span class="metric-label">Quotations</span>
+                                        <span class="metric-value"><t t-esc="state.data.sales.quotations"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openSalesAction('orders')">
+                                        <span class="metric-label">Sales Orders</span>
+                                        <span class="metric-value"><t t-esc="state.data.sales.sales_orders"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openSalesAction('delivered')">
+                                        <span class="metric-label">Delivered</span>
+                                        <span class="metric-value text-success"><t t-esc="state.data.sales.delivered"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manufacturing -->
+                        <div class="col-md-3">
+                            <div class="card premium-card mrp-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-industry"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-info tracking-wide">Manufacturing</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openMrpAction('progress')">
+                                        <span class="metric-label">In Progress</span>
+                                        <span class="metric-value"><t t-esc="state.data.manufacturing.in_progress"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openMrpAction('to_close')">
+                                        <span class="metric-label">To Close</span>
+                                        <span class="metric-value"><t t-esc="state.data.manufacturing.to_close"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openMrpAction('done')">
+                                        <span class="metric-label">Done</span>
+                                        <span class="metric-value text-info"><t t-esc="state.data.manufacturing.done"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inventory -->
+                        <div class="col-md-3">
+                            <div class="card premium-card inv-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-cubes"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-warning tracking-wide">Inventory</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openInventoryAction('total')">
+                                        <span class="metric-label">Total Products</span>
+                                        <span class="metric-value"><t t-esc="state.data.inventory.total_products"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openInventoryAction('low')">
+                                        <span class="metric-label">Low Stock</span>
+                                        <span class="metric-value text-warning fw-bold"><t t-esc="state.data.inventory.low_stock"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openInventoryAction('out')">
+                                        <span class="metric-label">Out of Stock</span>
+                                        <span class="metric-value text-danger fw-bold"><t t-esc="state.data.inventory.out_of_stock"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quality -->
+                        <div class="col-md-3">
+                            <div class="card premium-card qc-card h-100">
+                                <div class="card-body">
+                                    <div class="card-icon-bg"><i class="fa fa-check-square-o"></i></div>
+                                    <h6 class="card-title text-uppercase fw-bold text-success tracking-wide">Quality</h6>
+                                    
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('pending')">
+                                        <span class="metric-label">Pending</span>
+                                        <span class="metric-value"><t t-esc="state.data.quality.pending"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('passed')">
+                                        <span class="metric-label">Passed</span>
+                                        <span class="metric-value text-success fw-bold"><t t-esc="state.data.quality.passed"/></span>
+                                    </div>
+                                    <div class="metric-row highlight cursor-pointer" t-on-click="() => this.openQualityAction('failed')">
+                                        <span class="metric-label">Failed</span>
+                                        <span class="metric-value text-danger fw-bold"><t t-esc="state.data.quality.failed"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('rework')">
+                                        <span class="metric-label">Rework</span>
+                                        <span class="metric-value text-warning fw-bold"><t t-esc="state.data.quality.rework"/></span>
+                                    </div>
+                                    <div class="metric-row cursor-pointer" t-on-click="() => this.openQualityAction('scrap')">
+                                        <span class="metric-label">Scrap</span>
+                                        <span class="metric-value text-danger fw-bold"><t t-esc="state.data.quality.scrap"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. WIP Dashboard -->
+                    <div class="section-title mb-4">
+                        <h4 class="fw-bold"><i class="fa fa-cogs text-primary me-2"></i>Live WIP Tracking</h4>
+                        <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="wip-container mb-5">
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('pre')">
+                                <div class="wip-label">Pre-Production</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.pre_production"/></div>
+                                <div class="wip-icon"><i class="fa fa-clipboard"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('cut')">
+                                <div class="wip-label">Cutting</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.cutting"/></div>
+                                <div class="wip-icon"><i class="fa fa-scissors"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box active-pulse" style="cursor: pointer;" t-on-click="() => this.openWipAction('stitch')">
+                                <div class="wip-label">Stitching</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.stitching"/></div>
+                                <div class="wip-icon"><i class="fa fa-shirtsinbulk"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('finish')">
+                                <div class="wip-label">Finishing</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.finishing"/></div>
+                                <div class="wip-icon"><i class="fa fa-magic"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('qc')">
+                                <div class="wip-label">Quality Check</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.quality_check"/></div>
+                                <div class="wip-icon"><i class="fa fa-search"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('pack')">
+                                <div class="wip-label">Packing</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.packing"/></div>
+                                <div class="wip-icon"><i class="fa fa-archive"></i></div>
+                            </div>
+                        </div>
+                        <div class="wip-arrow"><i class="fa fa-chevron-right"></i></div>
+                        
+                        <div class="wip-step">
+                            <div class="wip-box success-box" style="cursor: pointer;" t-on-click="() => this.openWipAction('finished_goods')">
+                                <div class="wip-label">Finished Goods</div>
+                                <div class="wip-value"><t t-esc="state.data.wip.finished_goods"/></div>
+                                <div class="wip-icon"><i class="fa fa-truck"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Workcenter Backlog & WIP Inventory Tables -->
+                    <div class="row g-4 mb-5">
+                        <!-- Left: Workcenter Backlog -->
+                        <div class="col-md-6">
+                            <div class="card premium-card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-uppercase fw-bold text-primary mb-3"><i class="fa fa-tasks me-2"></i>Workcenter Backlog &amp; Capacity</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped align-middle dashboard-table mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Work Center</th>
+                                                    <th class="text-center">Pending</th>
+                                                    <th class="text-center">In Progress</th>
+                                                    <th class="text-center">Ready</th>
+                                                    <th class="text-end">Pending Qty</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.workcenter_backlog" t-as="wc" t-key="wc.workcenter_id">
+                                                    <tr>
+                                                        <td class="fw-bold" t-esc="wc.name"/>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-light text-dark border cursor-pointer" style="cursor: pointer;"
+                                                                  t-on-click="() => this.openWorkcenterOrders(wc.workcenter_id, 'waiting')">
+                                                                <t t-esc="wc.pending"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-warning text-dark cursor-pointer" style="cursor: pointer;"
+                                                                  t-on-click="() => this.openWorkcenterOrders(wc.workcenter_id, 'progress')">
+                                                                <t t-esc="wc.progress"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span class="badge bg-info text-white cursor-pointer" style="cursor: pointer;"
+                                                                  t-on-click="() => this.openWorkcenterOrders(wc.workcenter_id, 'ready')">
+                                                                <t t-esc="wc.ready"/>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-end fw-bold text-primary cursor-pointer" style="cursor: pointer; text-decoration: underline;"
+                                                            t-on-click="() => this.openWorkcenterOrders(wc.workcenter_id, 'all')">
+                                                            <t t-esc="wc.total_qty.toFixed(1)"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr t-if="!state.data.workcenter_backlog.length">
+                                                    <td colspan="5" class="text-center text-muted py-3">No pending work orders.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: WIP Inventory by Product & Stage -->
+                        <div class="col-md-6">
+                            <div class="card premium-card h-100">
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="card-title text-uppercase fw-bold text-primary m-0"><i class="fa fa-cubes me-2"></i>WIP Inventory on Hand (by Product)</h6>
+                                        <button class="btn btn-sm btn-outline-primary py-1" t-on-click="openWipReport">
+                                            <i class="fa fa-external-link me-1"></i>Open Full Report
+                                        </button>
+                                    </div>
+                                    <div class="table-responsive flex-grow-1" style="max-height: 280px; overflow-y: auto;">
+                                        <table class="table table-hover table-striped align-middle dashboard-table mb-0">
+                                            <thead class="sticky-top bg-white" style="z-index: 1;">
+                                                <tr>
+                                                    <th>Stage</th>
+                                                    <th>Product</th>
+                                                    <th class="text-end">Qty on Hand</th>
+                                                    <th class="text-end">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.wip_inventory" t-as="item" t-key="item.product + '_' + item.workcenter">
+                                                    <tr>
+                                                        <td class="text-muted"><t t-esc="item.workcenter"/></td>
+                                                        <td class="fw-bold"><t t-esc="item.product"/></td>
+                                                        <td class="text-end"><t t-esc="item.qty.toFixed(1)"/> <t t-esc="item.uom"/></td>
+                                                        <td class="text-end fw-bold text-success"><t t-esc="formatCurrency(item.value)"/></td>
+                                                    </tr>
+                                                </t>
+                                                <tr t-if="!state.data.wip_inventory.length">
+                                                    <td colspan="4" class="text-center text-muted py-3">No WIP inventory currently at locations.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Waste & Recent Production Orders -->
+                    <div class="row g-4 mb-5">
+                        <!-- Left: Waste and Damage Analysis -->
+                        <div class="col-md-5">
+                            <div class="card premium-card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-uppercase fw-bold text-primary mb-3"><i class="fa fa-trash-o me-2"></i>Waste &amp; Damage Cost Analysis</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped align-middle dashboard-table mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Category</th>
+                                                    <th class="text-end">Qty Scrapped</th>
+                                                    <th class="text-end">Waste Loss</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.top_scraps" t-as="scrap" t-key="scrap.name">
+                                                    <tr>
+                                                        <td class="fw-bold"><t t-esc="scrap.name"/></td>
+                                                        <td class="text-muted"><t t-esc="scrap.category"/></td>
+                                                        <td class="text-end text-danger fw-bold"><t t-esc="scrap.qty.toFixed(1)"/> <t t-esc="scrap.uom"/></td>
+                                                        <td class="text-end fw-bold text-danger"><t t-esc="formatCurrency(scrap.cost)"/></td>
+                                                    </tr>
+                                                </t>
+                                                <tr t-if="!state.data.top_scraps.length">
+                                                    <td colspan="4" class="text-center text-muted py-3">No scrapped products in this period.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right: Recent Production Orders -->
+                        <div class="col-md-7">
+                            <div class="card premium-card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-uppercase fw-bold text-primary mb-3"><i class="fa fa-industry me-2"></i>Recent Production Orders (MOs)</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped align-middle dashboard-table mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>MO Number</th>
+                                                    <th>Product</th>
+                                                    <th class="text-center">Progress</th>
+                                                    <th>Stage</th>
+                                                    <th class="text-end">Total Cost</th>
+                                                    <th class="text-end">Waste Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="state.data.recent_mos" t-as="mo" t-key="mo.id">
+                                                    <tr>
+                                                        <td class="fw-bold text-primary cursor-pointer" t-on-click="() => this.openAction('mrp.production', [['id', '=', mo.id]], mo.name)"><t t-esc="mo.name"/></td>
+                                                        <td class="text-truncate" style="max-width: 150px;" t-att-title="mo.product"><t t-esc="mo.product"/></td>
+                                                        <td class="text-center">
+                                                            <t t-esc="mo.produced_qty.toFixed(0)"/> / <t t-esc="mo.planned_qty.toFixed(0)"/>
+                                                        </td>
+                                                        <td>
+                                                            <span t-attf-class="badge rounded-pill #{
+                                                                mo.state_raw == 'done' ? 'bg-success text-white' : 
+                                                                mo.state_raw == 'progress' ? 'bg-warning text-dark' : 
+                                                                mo.state_raw == 'cancel' ? 'bg-danger text-white' : 
+                                                                'bg-light text-dark border'
+                                                            }"><t t-esc="mo.state"/></span>
+                                                        </td>
+                                                        <td class="text-end fw-bold"><t t-esc="formatCurrency(mo.total_cost)"/></td>
+                                                        <td class="text-end text-danger"><t t-esc="formatCurrency(mo.waste_cost)"/></td>
+                                                    </tr>
+                                                </t>
+                                                <tr t-if="!state.data.recent_mos.length">
+                                                    <td colspan="6" class="text-center text-muted py-3">No manufacturing orders in this period.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

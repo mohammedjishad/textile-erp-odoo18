@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="seq_branch_transfer_request" model="ir.sequence">
+        <field name="name">Branch Transfer Request</field>
+        <field name="code">branch.transfer.request</field>
+        <field name="prefix">BTR/%(year)s/%(month)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_branch_transfer_delivery" model="ir.sequence">
+        <field name="name">Branch Transfer Delivery</field>
+        <field name="code">branch.transfer.delivery</field>
+        <field name="prefix">BT-OUT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_branch_transfer_receipt" model="ir.sequence">
+        <field name="name">Branch Transfer Receipt</field>
+        <field name="code">branch.transfer.receipt</field>
+        <field name="prefix">BT-IN/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_branch_direct_transfer" model="ir.sequence">
+        <field name="name">Direct Branch Transfer</field>
+        <field name="code">branch.direct.transfer</field>
+        <field name="prefix">BDT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

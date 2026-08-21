@@ -1,0 +1,21 @@
+{
+    'name': 'Textile Accounting',
+    'version': '18.0.1.0.0',
+    'category': 'Accounting',
+    'summary': 'Manufacturing Costing, Sales Profitability, Product and Customer Margins, and Lot Traceability for Textile ERP',
+    'depends': ['account', 'stock', 'sale_management', 'purchase', 'mrp', 'textile_mrp', 'textile_quality', 'textile_sales'],
+    'data': [
+        'data/accounting_data.xml',
+        'views/res_config_settings_views.xml',
+        'views/mrp_production_views.xml',
+        'views/sale_order_views.xml',
+        'views/product_views.xml',
+        'views/partner_views.xml',
+        'views/stock_lot_views.xml',
+        'views/menu_views.xml',
+        'report/cost_sheet_report.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

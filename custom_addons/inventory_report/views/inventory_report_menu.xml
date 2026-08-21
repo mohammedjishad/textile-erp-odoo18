@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Nests under the existing Inventory app's "Reporting" menu,
+         alongside Stock, Locations, Moves History, Moves Analysis, Valuation -->
+    <menuitem id="menu_inventory_report_dashboard"
+              name="Category Report"
+              parent="stock.menu_warehouse_report"
+              action="action_inventory_report"
+              sequence="100"/>
+</odoo>

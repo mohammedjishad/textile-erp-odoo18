@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_qc_rework_return_wizard_form" model="ir.ui.view">
+        <field name="name">textile.qc.rework.return.wizard.form</field>
+        <field name="model">textile.qc.rework.return.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Return Repaired Products to QC">
+                <sheet>
+                    <field name="is_multi_variant" invisible="1"/>
+                    <field name="workorder_id" invisible="1"/>
+                    
+                    <div invisible="is_multi_variant">
+                        <group>
+                            <field name="qty" string="Quantity to Return"/>
+                        </group>
+                    </div>
+                    
+                    <div invisible="not is_multi_variant">
+                        <field name="line_ids">
+                            <list editable="bottom" create="0" delete="0">
+                                <field name="product_id" readonly="1" force_save="1"/>
+                                <field name="rework_qty" readonly="1" force_save="1"/>
+                                <field name="qty" string="Quantity to Return"/>
+                            </list>
+                        </field>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_confirm" string="Confirm Return" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_qc_rework_return_wizard" model="ir.actions.act_window">
+        <field name="name">Return Repaired Products</field>
+        <field name="res_model">textile.qc.rework.return.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

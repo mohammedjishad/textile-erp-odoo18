@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="textile_quality_view_form" model="ir.ui.view">
+        <field name="name">textile.quality.view.form</field>
+        <field name="model">textile.quality</field>
+        <field name="arch" type="xml">
+            <form string="Quality Inspection">
+                <header>
+                    <button name="action_validate" string="Validate Outcome" type="object" class="oe_highlight" invisible="state == 'done'"/>
+                    <button name="%(action_report_textile_quality)d" string="Print Report" type="action" class="btn-secondary"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Inspection Info">
+                            <field name="production_id" readonly="state == 'done'"/>
+                            <field name="workorder_id" readonly="state == 'done'"/>
+                            <field name="checkpoint" readonly="state == 'done'"/>
+                            <field name="inspector_id" readonly="state == 'done'"/>
+                            <field name="inspection_date" readonly="state == 'done'"/>
+                            <field name="has_variants" invisible="1"/>
+                        </group>
+                        <group string="Quantities" invisible="has_variants">
+                            <field name="received_qty" readonly="state == 'done'"/>
+                            <field name="passed_qty" readonly="state == 'done'"/>
+                            <field name="failed_qty" readonly="state == 'done'"/>
+                            <field name="rework_qty" readonly="state == 'done'"/>
+                            <field name="scrap_qty" readonly="state == 'done'"/>
+                        </group>
+                        <group string="Quality Checks">
+                            <field name="stitching_check" widget="boolean_toggle" readonly="state == 'done'"/>
+                            <field name="measurement_check" widget="boolean_toggle" readonly="state == 'done'"/>
+                            <field name="finishing_check" widget="boolean_toggle" readonly="state == 'done'"/>
+                            <field name="defect_count" invisible="has_variants" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+
+                    <!-- Variant Lines Section -->
+                    <notebook invisible="not has_variants">
+                        <page string="Variant Defect Logging" name="variant_defects">
+                            <field name="variant_line_ids" readonly="state == 'done'">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="received_qty" readonly="1"/>
+                                    <field name="passed_qty"/>
+                                    <field name="failed_qty"/>
+                                    <field name="rework_qty"/>
+                                    <field name="scrap_qty"/>
+                                    <field name="defect_reason"/>
+                                    <field name="remarks"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <group>
+                        <group string="Outcome">
+                            <field name="reject_reason" invisible="status in ('pass', 'pending') or has_variants" readonly="state == 'done'"/>
+                            <field name="status" readonly="1" widget="badge" decoration-success="status == 'pass'" decoration-danger="status == 'fail'" decoration-info="status == 'pending'"/>
+                        </group>
+                    </group>
+                    <group string="Remarks">
+                        <field name="remarks" placeholder="Add notes about the inspection..." nolabel="1" readonly="state == 'done'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree/List View -->
+    <record id="textile_quality_view_tree" model="ir.ui.view">
+        <field name="name">textile.quality.view.tree</field>
+        <field name="model">textile.quality</field>
+        <field name="arch" type="xml">
+            <list string="Quality Inspections"
+                  decoration-success="status == 'pass'"
+                  decoration-danger="status == 'fail'"
+                  decoration-muted="status == 'pending'">
+                <field name="name"/>
+                <field name="production_id"/>
+                <field name="checkpoint"/>
+                <field name="inspector_id"/>
+                <field name="inspection_date"/>
+                <field name="received_qty" string="Received"/>
+                <field name="passed_qty" string="Passed"/>
+                <field name="failed_qty" string="Failed"/>
+                <field name="rework_qty" string="Rework"/>
+                <field name="scrap_qty" string="Scrap"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'pass'"
+                       decoration-danger="status == 'fail'"
+                       decoration-info="status == 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="textile_quality_view_kanban" model="ir.ui.view">
+        <field name="name">textile.quality.view.kanban</field>
+        <field name="model">textile.quality</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" sample="1">
+                <field name="name"/>
+                <field name="production_id"/>
+                <field name="checkpoint"/>
+                <field name="inspector_id"/>
+                <field name="inspection_date"/>
+                <field name="status"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <span>MO: </span><field name="production_id"/>
+                                </div>
+                                <div class="text-muted">
+                                    <span>Date: </span><field name="inspection_date"/>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="inspector_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="status" widget="label_selection" options="{'classes': {'pending': 'info', 'pass': 'success', 'fail': 'danger'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="textile_quality_view_search" model="ir.ui.view">
+        <field name="name">textile.quality.view.search</field>
+        <field name="model">textile.quality</field>
+        <field name="arch" type="xml">
+            <search string="Search Quality Inspections">
+                <field name="name"/>
+                <field name="production_id"/>
+                <field name="inspector_id"/>
+                <field name="checkpoint"/>
+                
+                <filter string="Pending" name="pending" domain="[('state', '=', 'draft')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Pass" name="pass" domain="[('status', '=', 'pass')]"/>
+                <filter string="Fail" name="fail" domain="[('status', '=', 'fail')]"/>
+                <separator/>
+                <filter string="Final Inspection" name="final" domain="[('checkpoint', '=', 'final')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Manufacturing Order" name="group_production_id" context="{'group_by': 'production_id'}"/>
+                    <filter string="Inspector" name="group_inspector_id" context="{'group_by': 'inspector_id'}"/>
+                    <filter string="Result" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_textile_quality" model="ir.actions.act_window">
+        <field name="name">Quality Inspections</field>
+        <field name="res_model">textile.quality</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="textile_quality_view_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record a new Quality Inspection
+            </p>
+        </field>
+    </record>
+</odoo>

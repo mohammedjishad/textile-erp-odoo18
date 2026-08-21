@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+prosevo_erp_gstir_reports.access_gstirn1_report,access_gstirn1_report,prosevo_erp_gstir_reports.model_gstirn1_report,base.group_user,1,1,1,1
+prosevo_erp_gstir_reports.access_gstr3b_report,access_gstr3b_report,prosevo_erp_gstir_reports.model_gstr3b_report,base.group_user,1,1,1,1
+prosevo_erp_gstir_reports.access_gstirn2b_report,access_gstirn2b_report,prosevo_erp_gstir_reports.model_gstirn2b_report,base.group_user,1,1,1,1
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_workorder_view_form_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.workorder.form.inherit.textile.mrp</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Variant Progress" name="variant_progress">
+                    <field name="variant_line_ids">
+                        <list editable="bottom">
+                            <field name="product_id" readonly="1"/>
+                            <field name="planned_qty" string="Planned Qty" readonly="1"/>
+                            <field name="qty_produced" string="Completed Qty"/>
+                            <field name="qty_remaining" string="Remaining Qty" readonly="1"/>
+                            <field name="product_uom_id" string="UoM" readonly="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

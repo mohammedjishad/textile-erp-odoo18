@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_workorder_tree_view_inherit_dashboard" model="ir.ui.view">
+        <field name="name">mrp.production.workorder.tree.view.inherit.dashboard</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='production_id']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

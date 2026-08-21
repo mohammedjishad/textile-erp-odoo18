@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_report_pivot" model="ir.ui.view">
+        <field name="name">product.product.inventory.report.pivot</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <pivot string="Inventory Report" display_quantity="true">
+                <field name="x_category_name" type="row"/>
+                <field name="name" type="row"/>
+                <field name="x_unit_cost" type="measure" string="Unit Cost"/>
+                <field name="x_qty_on_hand" type="measure" string="On Hand"/>
+                <field name="x_total_value" type="measure" string="Total Value"/>
+                <field name="x_gross_profit" type="measure" string="Gross Profit"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_inventory_report_graph" model="ir.ui.view">
+        <field name="name">product.product.inventory.report.graph</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <graph string="Inventory Report" type="bar">
+                <field name="name"/>
+                <field name="x_qty_on_hand" type="measure" string="On Hand"/>
+                <field name="x_total_value" type="measure" string="Total Value"/>
+                <field name="x_gross_profit" type="measure" string="Gross Profit"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_inventory_report_list" model="ir.ui.view">
+        <field name="name">product.product.inventory.report.list</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <list string="Inventory Report">
+                <field name="x_category_name" string="Product Category"/>
+                <field name="name"/>
+                <field name="x_unit_cost" string="Unit Cost"/>
+                <field name="x_qty_on_hand" string="On Hand"/>
+                <field name="x_total_value" string="Total Value"/>
+                <field name="x_gross_profit" string="Gross Profit"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_inventory_report_search" model="ir.ui.view">
+        <field name="name">product.product.inventory.report.search</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <search string="Inventory Report">
+                <field name="name" string="Product"/>
+                <field name="x_category_name" string="Category"/>
+                <group expand="1" string="Group By">
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'x_category_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_inventory_report" model="ir.actions.act_window">
+        <field name="name">Category Report</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="search_view_id" ref="view_inventory_report_search"/>
+        <field name="domain">[('is_storable', '=', True)]</field>
+    </record>
+</odoo>

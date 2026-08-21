@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- MRP Production View Inherit -->
+    <record id="mrp_production_form_view_inherit_textile_quality" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.textile.quality</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="show_quality_check" invisible="1"/>
+                <button name="action_quality_control" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-check-square-o"
+                        invisible="not show_quality_check"
+                        groups="textile_sales.group_textile_production_user,textile_sales.group_textile_quality_user">
+                    <field name="quality_check_count" widget="statinfo" string="Quality Checks"/>
+                </button>
+                <button name="action_return_rework" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-refresh"
+                        string="Return Rework"
+                        invisible="not show_quality_check"
+                        groups="textile_sales.group_textile_production_user,textile_sales.group_textile_quality_user">
+                </button>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- MRP Workorder View Inherit -->
+    <record id="mrp_production_workorder_form_view_inherit_textile_quality" model="ir.ui.view">
+        <field name="name">mrp.production.workorder.form.inherit.textile.quality</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_form_view_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <field name="is_qc_stage" invisible="1"/>
+                <button name="action_qc_batches" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-check-square-o"
+                        invisible="not is_qc_stage">
+                    <field name="qc_batch_count" widget="statinfo" string="QC Batches"/>
+                </button>
+                <button name="action_return_rework" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-refresh"
+                        string="Return Rework"
+                        invisible="not is_qc_stage">
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

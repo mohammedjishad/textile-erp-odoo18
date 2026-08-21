@@ -1,0 +1,22 @@
+{
+    'name': 'Textile MRP',
+    'version': '18.0.1.0.0',
+    'category': 'Manufacturing',
+    'summary': 'Textile-specific manufacturing fields, fabric roll tracking, waste and consumption tracking, and multi-variant batch production',
+    'depends': ['textile_sales', 'mrp', 'stock'],
+    'data': [
+        'security/ir.model.access.csv',
+        'report/production_report.xml',
+        'report/production_report_template.xml',
+        'views/mrp_production_views.xml',
+        'views/mrp_workorder_views.xml',
+        'views/mrp_bom_views.xml',
+        'views/mrp_workcenter_views.xml',
+        'views/product_category_views.xml',
+        'views/wip_tracking_views.xml',
+        'views/menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}

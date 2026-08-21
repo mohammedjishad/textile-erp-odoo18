@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_workcenter_view_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.workcenter.form.inherit.textile.mrp</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="inherit_id" ref="mrp.mrp_workcenter_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='costing']" position="inside">
+                <field name="costs_hour_machine" widget="monetary"/>
+                <field name="costs_hour_labor" widget="monetary"/>
+                <field name="wip_location_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

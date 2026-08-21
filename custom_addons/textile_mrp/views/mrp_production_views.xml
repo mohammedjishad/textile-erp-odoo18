@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit MRP Production Form View -->
+    <record id="mrp_production_form_view_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.production.form.inherit.textile.mrp</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="is_multi_variant" widget="boolean_toggle"/>
+                <field name="product_tmpl_id" invisible="not is_multi_variant" required="is_multi_variant"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('type', 'in', ['product', 'consu']), ('categ_id.complete_name', 'not ilike', 'purchased'), ('categ_id.complete_name', 'not ilike', 'raw materials'), '|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+                <attribute name="invisible">is_multi_variant</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Variant Lines" name="variant_lines" invisible="not is_multi_variant">
+                    <field name="variant_line_ids" readonly="state in ('done', 'cancel')">
+                        <list editable="bottom">
+                            <field name="product_id" domain="[('product_tmpl_id', '=', parent.product_tmpl_id)]"/>
+                            <field name="product_qty" string="Planned Qty"/>
+                            <field name="qty_producing" string="Producing Qty" optional="show"/>
+                            <field name="qty_produced" string="Produced Qty"/>
+                            <field name="product_uom_id" string="UoM"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Textile Details" name="textile_details">
+                    <field name="wip_dashboard" widget="html" nolabel="1"/>
+                    <notebook>
+                        <page string="Fabric &amp; Specs" name="fabric_and_specs">
+                            <group>
+                                <group string="Consumption Tracking">
+                                    <field name="issued_fabric"/>
+                                    <field name="consumed_fabric"/>
+                                    <field name="returned_fabric"/>
+                                    <field name="waste_qty"/>
+                                    <field name="waste_pct" readonly="1"/>
+                                    <button name="action_record_waste"
+                                            string="Record Waste"
+                                            type="object"
+                                            class="btn-primary mt-2"
+                                            invisible="waste_qty &lt;= 0 or state not in ('progress', 'done')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Performance" name="performance">
+                            <group>
+                                <group string="Production Efficiency">
+                                    <field name="qty_produced" readonly="1"/>
+                                    <field name="product_qty" readonly="1"/>
+                                    <field name="efficiency" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Textile Costing" name="textile_costing">
+                            <group>
+                                <group string="Material &amp; Direct Costs">
+                                    <field name="fabric_cost"/>
+                                    <field name="thread_cost"/>
+                                    <field name="accessories_cost"/>
+                                </group>
+                                <group string="Operational Costs">
+                                    <field name="labor_cost"/>
+                                    <field name="machine_cost"/>
+                                    <field name="packaging_cost"/>
+                                    <field name="overhead_cost"/>
+                                </group>
+                            </group>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_textile_cost" readonly="1" decoration-bf="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit MRP Production Tree View -->
+    <record id="mrp_production_tree_view_inherit_textile_mrp" model="ir.ui.view">
+        <field name="name">mrp.production.list.inherit.textile.mrp</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="is_multi_variant" optional="show"/>
+                <field name="product_tmpl_id" optional="hide"/>
+                <field name="waste_pct" optional="show"/>
+                <field name="efficiency" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Expose Quantities and Tracking Buttons in Work Order List -->
+    <record id="mrp_production_workorder_tree_editable_view_mo_form_inherit_wip_tracking" model="ir.ui.view">
+        <field name="name">mrp.production.work.order.list.editable.inherit.wip.tracking</field>
+        <field name="model">mrp.workorder</field>
+        <field name="inherit_id" ref="mrp.mrp_production_workorder_tree_editable_view_mo_form"/>
+        <field name="arch" type="xml">
+            <!-- Make Quantity Produced always visible -->
+            <xpath expr="//list/field[@name='qty_produced']" position="attributes">
+                <attribute name="column_invisible">False</attribute>
+            </xpath>
+            <!-- Add qty_transferred and qty_ready before qty_remaining -->
+            <xpath expr="//list/field[@name='qty_remaining']" position="before">
+                <field name="qty_transferred" optional="show"/>
+                <field name="qty_ready" optional="show"/>
+            </xpath>
+            <!-- Hide standard finish button to force using custom tracking -->
+            <xpath expr="//list/button[@name='button_finish']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Add Tracking Buttons after button_finish -->
+            <xpath expr="//list/button[@name='button_finish']" position="after">
+                <button name="action_log_production" type="object" title="Log Production" class="btn-info px-2" icon="fa-plus-square" invisible="state in ('done', 'cancel')"/>
+                <button name="action_transfer_wip" type="object" title="Transfer WIP" class="btn-primary px-2" icon="fa-arrow-right" invisible="qty_ready &lt;= 0 or state == 'cancel'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
