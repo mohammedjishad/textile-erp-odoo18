@@ -1,9 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_branch_transfer_request,branch.transfer.request,model_branch_transfer_request,base.group_user,1,1,1,1
-access_branch_transfer_request_line_user,branch.transfer.request.line.user,model_branch_transfer_request_line,base.group_user,1,1,1,1
-access_branch_transfer_request_user,branch.transfer.request.user,model_branch_transfer_request,base.group_user,1,1,1,0
-access_branch_transfer_request_line_user,branch.transfer.request.line.user,model_branch_transfer_request_line,base.group_user,1,1,1,0
-access_branch_transfer_return_wizard,branch.transfer.return.wizard,model_branch_transfer_return_wizard,base.group_user,1,1,1,1
-access_branch_transfer_return_wizard_line,branch.transfer.return.wizard.line,model_branch_transfer_return_wizard_line,base.group_user,1,1,1,1
-access_branch_direct_transfer,branch.direct.transfer,model_branch_direct_transfer,base.group_user,1,1,1,1
-access_branch_direct_transfer_line,branch.direct.transfer.line,model_branch_direct_transfer_line,base.group_user,1,1,1,1

@@ -8,6 +8,10 @@ venv/
 .env
 
 *.log
+# Private / company addons
+extra-addons/
 
+# Local Odoo configuration
+odoo.conf
 .DS_Store
 odoo.conf
