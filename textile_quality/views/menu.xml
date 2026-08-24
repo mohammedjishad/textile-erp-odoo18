@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <!-- Root Menu -->
-    <menuitem id="menu_textile_quality_root" name="Quality Control" sequence="30"/>
-    
-    <!-- Submenus -->
-    <menuitem id="menu_textile_quality_inspections" name="Quality Inspections" parent="menu_textile_quality_root" action="action_textile_quality" sequence="10"/>
-</odoo>
