@@ -42,6 +42,19 @@ Integrates operational costs directly into the financial ledger:
 
 ---
 
+## My Contributions
+
+- Developed Textile Manufacturing workflows
+- Implemented shortage-based Manufacturing Order generation
+- Extended Odoo Manufacturing and Sales modules
+- Developed Production Costing
+- Implemented Quality Inspection workflows
+- Built Textile Dashboard
+- Integrated Accounting with Manufacturing Costs
+
+---
+
+
 ## 🛠️ Tech Stack & Requirements
 
 - **Platform**: Odoo 18 (Community or Enterprise)
