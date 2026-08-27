@@ -16,10 +16,10 @@ The modules are built with a highly decoupled, modular design pattern. They inte
 
 ```mermaid
 graph TD
-    classDef sales fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef mrp fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef qc fill:#ffb,stroke:#333,stroke-width:2px;
-    classDef acc fill:#bfb,stroke:#333,stroke-width:2px;
+    classDef sales fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef mrp fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef qc fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef acc fill:#fff,stroke:#333,stroke-width:2px,color:#000;
 
     SO[Sales Order Confirmation] --> |Shortage Check| SC{Is there a shortage?}
     SC --> |No Shortage| MTS[Deliver from Stock MTS]
